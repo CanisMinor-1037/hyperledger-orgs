@@ -1,0 +1,57 @@
+# 启动 docker-compose -f docker-compose-1orderer.yaml up -d
+# 停止 docker-compose -f docker-compose-1orderer.yaml down
+version: '2.0'
+
+services:
+  orderer2.example.com:
+        image: hyperledger/fabric-orderer:2.4.1
+        restart: always
+        container_name: orderer2.example.com
+        hostname: orderer2.example.com
+        ports:
+            - "7050:7050"
+        extra_hosts:
+            - "orderer0.example.com:47.94.164.138"
+            - "orderer1.example.com:101.43.248.215"
+            - "orderer2.example.com:47.113.205.36"
+            - "peer0.org0.example.com:47.94.164.138"
+            - "peer1.org0.example.com:47.94.164.138"
+            - "ca.org0.example.com:47.94.164.138"
+            - "peer0.org1.example.com:101.43.248.215"
+            - "peer1.org1.example.com:101.43.248.215"
+            - "ca.org1.example.com:101.43.248.215"
+            - "peer0.org2.example.com:47.113.205.36"
+            - "peer1.org2.example.com:47.113.205.36"
+            - "ca.org2.example.com:47.113.205.36"
+        environment:
+            - FABRIC_LOGGING_SPEC=DEBUG  # default: INFO
+            - FABRIC_LOGGING_FORMAT="%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}"
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 # default: 127.0.0.1
+            - ORDERER_GENERAL_LISTENPORT=7050
+            - ORDERER_GENERAL_GENESISMETHOD=file # default: provisional
+            - ORDERER_GENERAL_BOOTSTRAPFILE=/etc/hyperledger/fabric/orderer.genesis.block # by default, all materials should be put under $FABRIC_CFG_PATH, which defaults to /etc/hyperledger/fabric
+            - ORDERER_GENERAL_LOCALMSPID=OrdererMSP # default: DEFAULT
+            - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/fabric/msp
+            - ORDERER_GENERAL_LEDGERTYPE=file
+            #- ORDERER_GENERAL_LEDGERTYPE=json  # default: file
+            - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443  # operation RESTful API
+            - ORDERER_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
+            #- ORDERER_RAMLEDGER_HISTORY_SIZE=100  #only useful when use ram ledger
+            # enabled TLS
+            - ORDERER_GENERAL_TLS_ENABLED=true # default: false
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/fabric/tls/server.key
+            - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/fabric/tls/server.crt
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/fabric/tls/ca.crt]
+            # Only required by raft mode
+            - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/fabric/tls/server.key
+            - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/fabric/tls/server.crt
+            - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/fabric/tls/ca.crt]
+            - ORDERER_GENERAL_CLUSTER_SENDBUFFERSIZE=10
+        volumes:
+            - ./crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/etc/hyperledger/fabric/msp
+            - ./crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/:/etc/hyperledger/fabric/tls
+            - ./channel-artifacts/orderer.genesis.block:/etc/hyperledger/fabric/orderer.genesis.block
+        expose:
+            - "7050"  # gRPC
+            - "8443"  # Operation REST
+        command: orderer start

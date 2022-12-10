@@ -1,0 +1,17 @@
+# 将文件内容添加到/etc/hosts
+
+47.94.164.138 orderer0.example.com
+101.43.248.215 orderer1.example.com
+47.113.205.36 orderer2.example.com
+
+47.94.164.138 peer0.org0.example.com
+47.94.164.138 peer1.org0.example.com
+47.94.164.138 ca.org0.example.com
+
+101.43.248.215 peer0.org1.example.com
+101.43.248.215 peer1.org1.example.com
+101.43.248.215 ca.org1.example.com
+
+47.113.205.36 peer0.org2.example.com
+47.113.205.36 peer1.org2.example.com
+47.113.205.36 ca.org2.example.com

@@ -1,0 +1,38 @@
+---
+name: first-network-org0
+version: 1.0.0
+client:
+  organization: Org0
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org0:
+    mspid: Org0MSP
+    peers:
+    - peer0.org0.example.com
+    - peer1.org0.example.com
+    certificateAuthorities:
+    - ca.org0.example.com
+peers:
+  peer0.org0.example.com:
+    url: grpcs://peer0.org0.example.com:7051
+    tlsCACerts:
+      path: /home/power/hyperledger/fabric-network-docker/crypto-config/peerOrganizations/org0.example.com/tlsca/tlsca.org0.example.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.org0.example.com
+  peer1.org0.example.com:
+    url: grpcs://peer1.org0.example.com:8051
+    tlsCACerts:
+      path: /home/power/hyperledger/fabric-network-docker/crypto-config/peerOrganizations/org0.example.com/tlsca/tlsca.org0.example.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer1.org0.example.com
+certificateAuthorities:
+  ca.org0.example.com:
+    url: https://ca.org0.example.com:7054/
+    caName: ca-org0
+    tlsCACerts:
+      path: /home/power/hyperledger/fabric-network-docker/crypto-config/peerOrganizations/org0.example.com/tlsca/tlsca.org0.example.com-cert.pem
+    httpOptions:
+      verify: false

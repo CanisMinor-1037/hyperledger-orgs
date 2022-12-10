@@ -1,0 +1,38 @@
+version: '2.0'
+
+services:
+
+  ca.org0.example.com:
+    image: hyperledger/fabric-ca:1.5.5
+    restart: always
+    container_name: ca.org0.example.com
+    hostname: ca.org0.example.com
+    ports:
+      - "7054:7054"
+    extra_hosts:
+      - "orderer0.example.com:47.94.164.138"
+      - "orderer1.example.com:101.43.248.215"
+      - "orderer2.example.com:47.113.205.36"
+      - "peer0.org0.example.com:47.94.164.138"
+      - "peer1.org0.example.com:47.94.164.138"
+      - "ca.org0.example.com:47.94.164.138"
+      - "peer0.org1.example.com:101.43.248.215"
+      - "peer1.org1.example.com:101.43.248.215"
+      - "ca.org1.example.com:101.43.248.215"
+      - "peer0.org2.example.com:47.113.205.36"
+      - "peer1.org2.example.com:47.113.205.36"
+      - "ca.org2.example.com:47.113.205.36"
+    environment: 
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server 
+      - FABRIC_CA_SERVER_CA_NAME=ca-org0
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/ca.org0.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/priv_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server/ca.org0.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server/priv_sk
+    #command: fabric-ca-server start --ca.certfile ./crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem --ca.keyfile ./crypto-config/peerOrganizations/org1.example.com/ca/priv_sk -b admin:adminpw -d
+    command: fabric-ca-server start -b admin:adminpw -d
+    volumes:
+      - ./crypto-config/peerOrganizations/org0.example.com/ca/:/etc/hyperledger/fabric-ca-server
+    expose:
+      - "7054"
